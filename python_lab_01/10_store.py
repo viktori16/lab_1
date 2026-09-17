@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Есть словарь кодов товаров
-
 goods = {
     'Лампа': '12345',
     'Стол': '23456',
     'Диван': '34567',
     'Стул': '45678',
 }
-
-# Есть словарь списков количества товаров на складе.
-# Каждый товар может лежать в нескольких местах (партиях) с разной ценой.
 
 store = {
     '12345': [
@@ -32,35 +27,43 @@ store = {
     ],
 }
 
-# Рассчитать на какую сумму лежит каждого товара на складе
-# и вывести в формате
-#   <товар> - <кол-во> шт, стоимость <сумма> руб
 
-# Пример:
-#   Лампа - 27 шт, стоимость 1134 руб
+def calculate_store(goods, store):
+    result = {}
 
-for products in store.values():
-    for product in products:
-        product['cost'] = product['quantity'] * product['price']
+    for code, products in store.items():
+        total_quantity = 0
+        total_cost = 0
 
-total = 0
+        for product in products:
+            total_quantity += product['quantity']
+            total_cost += product['quantity'] * product['price']
 
-for products in store.values():
-    for product in products:
-        total += product['cost']
+        product_name = [
+            name for name, product_code in goods.items()
+            if product_code == code
+        ][0]
 
-print('Общая стоимость товаров -', total)
+        result[product_name] = {
+            'quantity': total_quantity,
+            'cost': total_cost,
+        }
 
-for code, products in store.items():
-    total_quantity = 0
-    total_cost = 0
+    return result
 
-    for product in products:
-        total_quantity += product['quantity']
-        total_cost += product['quantity'] * product['price']
 
-    product_name = [name for name, product_code in goods.items() if product_code == code][0]
+def main():
+    result = calculate_store(goods, store)
 
-    print(
-        f'{product_name} - {total_quantity} шт, стоимость {total_cost} руб'
-    )
+    total = sum(product['cost'] for product in result.values())
+    print('Общая стоимость товаров -', total)
+
+    for product_name, product in result.items():
+        print(
+            f"{product_name} - {product['quantity']} шт, "
+            f"стоимость {product['cost']} руб"
+        )
+
+
+if __name__ == '__main__':
+    main()

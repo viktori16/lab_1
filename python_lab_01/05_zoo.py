@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Есть список животных в зоопарке
 zoo = ['lion', 'kangaroo', 'elephant', 'monkey']
-
-# Посадите медведя (bear) между львом и кенгуру
-# и выведите список на консоль
-zoo.insert(1, 'bear')
-print(zoo)
-
-# Добавьте птиц из списка birds в последние клетки зоопарка
 birds = ['rooster', 'ostrich', 'lark']
-# и выведите список на консоль
-zoo.extend(birds)
-print(zoo)
 
-# Уберите слона (elephant) из зоопарка
-# и выведите список на консоль
-zoo.remove('elephant')
-print(zoo)
 
-# Выведите на консоль в какой клетке сидит лев (lion) и жаворонок (lark).
-# Номера при выводе должны быть 1-индексированными (первая клетка - номер 1).
-print('Лев находится в клетке', zoo.index('lion') + 1)
-print('Жаворонок находится в клетке', zoo.index('lark') + 1)
+def prepare_zoo(zoo, birds):
+    zoo.insert(1, 'bear')
+    zoo.extend(birds)
+    zoo.remove('elephant')
+    return zoo
+
+
+def get_animal_cell(zoo, animal):
+    return zoo.index(animal) + 1
+
+
+def main():
+    zoo_copy = zoo.copy()
+
+    zoo_copy.insert(1, 'bear')
+    print(zoo_copy)
+
+    zoo_copy.extend(birds)
+    print(zoo_copy)
+
+    zoo_copy.remove('elephant')
+    print(zoo_copy)
+
+    print('Лев находится в клетке', get_animal_cell(zoo_copy, 'lion'))
+    print('Жаворонок находится в клетке', get_animal_cell(zoo_copy, 'lark'))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,24 +1,50 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# В саду сорвали цветы
-garden = ('ромашка', 'роза', 'одуванчик', 'ромашка', 'гладиолус', 'подсолнух', 'роза', )
+garden = (
+    'ромашка',
+    'роза',
+    'одуванчик',
+    'ромашка',
+    'гладиолус',
+    'подсолнух',
+    'роза',
+)
 
-# На лугу сорвали цветы
-meadow = ('клевер', 'одуванчик', 'ромашка', 'клевер', 'мак', 'одуванчик', 'ромашка', )
+meadow = (
+    'клевер',
+    'одуванчик',
+    'ромашка',
+    'клевер',
+    'мак',
+    'одуванчик',
+    'ромашка',
+)
 
-# Создайте множество цветов, произрастающих в саду и на лугу
-garden_set = set(garden)
-meadow_set = set(meadow)
 
-# Выведите на консоль все виды цветов
-print(garden_set | meadow_set)
+def get_flowers(garden, meadow):
+    garden_set = set(garden)
+    meadow_set = set(meadow)
 
-# Выведите на консоль те, которые растут и там и там
-print(garden_set & meadow_set)
+    return (
+        garden_set | meadow_set,
+        garden_set & meadow_set,
+        garden_set - meadow_set,
+        meadow_set - garden_set,
+    )
 
-# Выведите на консоль те, которые растут в саду, но не растут на лугу
-print(garden_set - meadow_set)
 
-# Выведите на консоль те, которые растут на лугу, но не растут в саду
-print(meadow_set - garden_set)
+def main():
+    all_flowers, common, garden_only, meadow_only = get_flowers(
+        garden,
+        meadow
+    )
+
+    print(all_flowers)
+    print(common)
+    print(garden_only)
+    print(meadow_only)
+
+
+if __name__ == '__main__':
+    main()

@@ -1,16 +1,21 @@
-import ast
-import runpy
+import importlib
 
 
-def run_task(filename, capsys):
-    runpy.run_path(filename)
-    return capsys.readouterr().out.strip().splitlines()
+distance = importlib.import_module('00_distance')
+circle = importlib.import_module('01_circle')
+operations = importlib.import_module('02_operations')
+movies = importlib.import_module('03_favorite_movies')
+family = importlib.import_module('04_my_family')
+zoo = importlib.import_module('05_zoo')
+songs = importlib.import_module('06_songs_list')
+secret = importlib.import_module('07_secret')
+garden = importlib.import_module('08_garden')
+shopping = importlib.import_module('09_shopping')
+store = importlib.import_module('10_store')
 
 
-def test_00_distance(capsys):
-    result = runpy.run_path('00_distance.py')
-
-    distances = result['distances']
+def test_00_distance():
+    distances = distance.calculate_distances(distance.sites)
 
     assert distances['Moscow']['Moscow'] == 0
     assert distances['Moscow']['London'] == distances['London']['Moscow']
@@ -18,24 +23,24 @@ def test_00_distance(capsys):
     assert distances['London']['Paris'] == distances['Paris']['London']
 
 
-def test_01_circle(capsys):
-    output = run_task('01_circle.py', capsys)
+def test_01_circle():
+    area = circle.calculate_area(42)
 
-    assert output[0] == '5541.7693'
-    assert output[1] == 'True'
-    assert output[2] == 'False'
-
-
-def test_02_operations(capsys):
-    output = run_task('02_operations.py', capsys)
-
-    assert output[-1] == '25'
+    assert area == 5541.7693
+    assert circle.is_inside_circle((23, 34), 42) is True
+    assert circle.is_inside_circle((30, 30), 42) is False
 
 
-def test_03_favorite_movies(capsys):
-    output = run_task('03_favorite_movies.py', capsys)
+def test_02_operations():
+    result = operations.calculate_result()
 
-    assert output == [
+    assert result == 25
+
+
+def test_03_favorite_movies():
+    result = movies.get_favorite_movies(movies.my_favorite_movies)
+
+    assert result == [
         'Терминатор',
         'Назад в будущее',
         'Пятый элемент',
@@ -43,42 +48,44 @@ def test_03_favorite_movies(capsys):
     ]
 
 
-def test_04_my_family(capsys):
-    output = run_task('04_my_family.py', capsys)
+def test_04_my_family():
+    father_height = family.get_father_height(family.my_family_height)
+    total_height = family.get_total_height(family.my_family_height)
 
-    assert output[0] == 'Рост отца - 172 см'
-    assert output[1] == 'Общий рост моей семьи - 989 см'
-
-
-def test_05_zoo(capsys):
-    output = run_task('05_zoo.py', capsys)
-
-    assert output[-2] == 'Лев находится в клетке 1'
-    assert output[-1] == 'Жаворонок находится в клетке 7'
+    assert father_height == 172
+    assert total_height == 989
 
 
-def test_06_songs_list(capsys):
-    output = run_task('06_songs_list.py', capsys)
+def test_05_zoo():
+    animals = zoo.prepare_zoo(zoo.zoo.copy(), zoo.birds)
 
-    assert output[0] == 'Три песни звучат 14.93 минут'
-    assert output[1] == 'А другие три песни звучат 13.49 минут'
-
-
-def test_07_secret(capsys):
-    output = run_task('07_secret.py', capsys)
-
-    assert output[0] == 'в бане веник дороже денег'
+    assert animals.index('lion') + 1 == 1
+    assert animals.index('lark') + 1 == 7
+    assert 'elephant' not in animals
+    assert 'bear' in animals
 
 
-def test_08_garden(capsys):
-    output = run_task('08_garden.py', capsys)
+def test_06_songs_list():
+    first_three = songs.calculate_first_three_songs()
+    other_three = songs.calculate_other_three_songs()
 
-    all_plants = ast.literal_eval(output[0])
-    common_plants = ast.literal_eval(output[1])
-    garden_only = ast.literal_eval(output[2])
-    meadow_only = ast.literal_eval(output[3])
+    assert first_three == 14.93
+    assert other_three == 13.49
 
-    assert all_plants == {
+
+def test_07_secret():
+    result = secret.decode_message(secret.secret_message)
+
+    assert result == 'в бане веник дороже денег'
+
+
+def test_08_garden():
+    all_flowers, common, garden_only, meadow_only = garden.get_flowers(
+        garden.garden,
+        garden.meadow
+    )
+
+    assert all_flowers == {
         'одуванчик',
         'роза',
         'клевер',
@@ -88,7 +95,7 @@ def test_08_garden(capsys):
         'мак',
     }
 
-    assert common_plants == {
+    assert common == {
         'одуванчик',
         'ромашка',
     }
@@ -105,10 +112,8 @@ def test_08_garden(capsys):
     }
 
 
-def test_09_shopping(capsys):
-    result = runpy.run_path('09_shopping.py')
-
-    sweets = result['sweets']
+def test_09_shopping():
+    sweets = shopping.get_sweets()
 
     assert sweets['печенье'] == [
         {'shop': 'пятерочка', 'price': 9.99},
@@ -131,10 +136,12 @@ def test_09_shopping(capsys):
     ]
 
 
-def test_10_store(capsys):
-    output = run_task('10_store.py', capsys)
+def test_10_store():
+    result = store.calculate_store(store.goods, store.store)
 
-    assert 'Лампа - 27 шт, стоимость 1134 руб' in output
-    assert 'Стол - 54 шт, стоимость 27860 руб' in output
-    assert 'Диван - 3 шт, стоимость 3550 руб' in output
-    assert 'Стул - 105 шт, стоимость 10311 руб' in output
+    assert result == {
+        'Лампа': {'quantity': 27, 'cost': 1134},
+        'Стол': {'quantity': 54, 'cost': 27860},
+        'Диван': {'quantity': 3, 'cost': 3550},
+        'Стул': {'quantity': 105, 'cost': 10311},
+    }
